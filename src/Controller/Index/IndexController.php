@@ -5,6 +5,7 @@ namespace Com\Youzan\ZanHttpDemo\Controller\Index;
 use Com\Youzan\ZanHttpDemo\Demo\Service\HttpCall;
 use Com\Youzan\ZanHttpDemo\Demo\Service\NovaCall;
 use Com\Youzan\ZanHttpDemo\Model\Index\GetCacheData;
+use Zan\Framework\Components\Nsq\SQS;
 use Zan\Framework\Foundation\Domain\HttpController as Controller;
 use Com\Youzan\ZanHttpDemo\Model\Index\GetDBData;
 use Zan\Framework\Network\Common\Client;
@@ -16,7 +17,20 @@ class IndexController extends Controller
     //字符串输出示例
     public function index()
     {
-        yield $this->display("Demo/welcome/welcome");
+        //yield $this->display("Demo/welcome/welcome");
+
+        $topic = "Avengers";
+
+        $oneMsg = "hello";
+        $multiMsgs = [
+            "hello",
+            "hi",
+        ];
+
+        /* @var Producer $producer */
+        $ok = (yield SQS::publish($topic, $oneMsg));
+        $ok = (yield SQS::publish($topic, "hello", "hi"));
+        $ok = (yield SQS::publish($topic, ...$multiMsgs));
     }
 
     public function exception()
